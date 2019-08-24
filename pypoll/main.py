@@ -1,58 +1,99 @@
-#import modules
 import os
-import pandas as pd 
 import csv
 
-#find the file & read it
-vote_data = ("vote_data.csv")
-vote_df = pd.read_csv(vote_data)
+#get the file
+vote_data = os.path.join('vote_data.csv')
 
-#establish some variables to work with
-#The total number of votes cast
-vote_total = (vote_df["Voter ID"].count())
+#open/read the file
+with open(vote_data, mode = 'r') as csvfile:
+    vote_csv = csv.reader(csvfile, delimiter=',')
+    next(vote_csv)
+        
+  
 
-#A complete list of candidates who received votes
-candidates = (vote_df["Candidate"].unique())
-c_list = candidates.tolist()
+    v_total = 0
+    candidates = []
+    c1 = 0
+    c2 = 0
+    c3 = 0
+    c4 = 0
 
-#Vote counts for each candidate
-vote_counts = (vote_df["Candidate"].value_counts())
-v_list = vote_counts.tolist()
+    for row in vote_csv:
+        v_total += 1
+        if row[2] not in candidates:
+            candidates.append(row[2])
+        if row[2] == candidates[0]:
+            c1 +=1
+        elif row[2] == candidates[1]:
+            c2 +=1
+        elif row[2] == candidates[2]:
+            c3 +=1
+        elif row[2] == candidates[3]:
+            c4 +=1
 
-#Each candidate's votes as a percentage of total votes
-p_list = []
-for x in v_list:
-    p_list.append(round(int(x*100)/int(vote_total)))
+    results = [c1, c2, c3, c4]
+    
+    percents = []
+    for x in results:  
+        percents.append(round(int((x*100)/v_total)))
 
-#make a dictionary and convert it to a dataframe
-dic = {"Candidate Name":c_list, "Percentage of Total Votes":p_list, "Number of Votes":v_list}
-results_df = pd.DataFrame(dic)
+    winner = (max(percents))
+    dic = dict(zip(percents, candidates))
 
+#print report
+    print("Election Results")
+    print("-------------------------")
+    print("Total Votes: " + str(v_total))
+    print("-------------------------")
+    
+    index = 0
+    for x in candidates:
+        print(str(candidates[int(index)]) + ": "+ str(percents[int(index)]) + "% ("+ str(results[int(index)]) + ")")
+        index += 1
+    print("-------------------------")
+    print("Winner: " + dic[winner])
+    print("-------------------------")
+
+    
+    f = open("Report.txt","w+")
+    f.write("Election Results\n")
+    f.write("-------------------------\n")
+    f.write("Total Votes: " + str(v_total)+"\n")
+    f.write("-------------------------\n")
+    index = 0
+    for x in candidates:
+        f.write(str(candidates[int(index)]) + ": "+ str(percents[int(index)]) + "% ("+ str(results[int(index)]) + ")\n")
+        index += 1
+    f.write("-------------------------\n")
+    f.write("Winner: " + dic[winner]+"\n")
+    f.write("-------------------------\n")
+    f.close()
+
+    os.startfile("Report.txt")
+
+    
+
+    
+    
+    
+
+
+
+#list of candidates
+#list of candidate vote totals
+#calculate candidate percentages
 #declare a winner
-most_votes = (max(v_list))
-for index, row in results_df.iterrows():
-    if row[2] == int(most_votes):
-        winner = str(row[0])
+#print results
+#print results in .txt file
 
-#print results in command line
-print("ELECTION RESULTS:")
-print("---------------------------------------------------------------------------------")
-print("Total Votes: " + str(vote_total))
-print("---------------------------------------------------------------------------------")
-print (results_df.to_string(index=False))
-print("---------------------------------------------------------------------------------")
-print(str(winner) + " has won the election.")
-print("---------------------------------------------------------------------------------")
-
-#make and open a text file with the results
-f = open("Report.txt","w+")
-f.write("ELECTION RESULTS:\n")
-f.write("---------------------------------------------------------------------------------\n")
-f.write("Total Votes: " + str(vote_total)+"\n")
-f.write("---------------------------------------------------------------------------------\n")
-f.write(results_df.to_string(index=False)+"\n")
-f.write("---------------------------------------------------------------------------------\n")
-f.write(str(winner) + " has won the election.\n")
-f.write("---------------------------------------------------------------------------------\n")
-f.close()
-os.startfile("Report.txt")
+#Election Results
+#-------------------------
+#Total Votes: 3521001
+#-------------------------
+#Khan: 63.000% (2218231)
+#Correy: 20.000% (704200)
+#Li: 14.000% (492940)
+#O'Tooley: 3.000% (105630)
+#-------------------------
+#Winner: Khan
+#-------------------------

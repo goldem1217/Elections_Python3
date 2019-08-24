@@ -24,7 +24,7 @@ with open(budget_data, mode = 'r') as csvfile:
             changelist.append(int(item[x])-int(item[x-1]))
         
         changelist.pop(0)
-        changelist.insert(0, 0)
+        
 
         return None
         
@@ -36,13 +36,16 @@ with open(budget_data, mode = 'r') as csvfile:
         bigmoney += int(row[1])
         
         monthlist.append(row[0])
-         
+
         months += 1
     
 #apply the single-use function
     changefunction(firstlist)
 
 #zip some lists to make a dictionary
+    
+    monthlist.pop(0)
+
     keys = (changelist)
 
     values = (monthlist)
