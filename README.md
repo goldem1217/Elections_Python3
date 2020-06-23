@@ -1,2 +1,2 @@
 # python-challenge
-Homework - Week 3
+Simple script to display election results based on sample data.
